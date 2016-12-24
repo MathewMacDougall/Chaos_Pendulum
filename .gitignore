@@ -1,3 +1,7 @@
+#Codeblocks specific files
+*.cbp
+*.layout
+
 # Compiled Object files
 *.slo
 *.lo
