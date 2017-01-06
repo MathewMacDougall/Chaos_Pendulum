@@ -17,6 +17,13 @@ private:
     double angle;
     double mass;
 
+    /**
+     * Detached the child from this pendulum
+     *
+     * @param child - the pendulum to detach
+     */
+    void detachChild(Pendulum *child);
+
 public:
 
     /**
@@ -61,13 +68,6 @@ public:
      * @param newChild - the pendulum to attach
      */
     void attachChild(Pendulum *newChild);
-
-    /**
-     * Detached the child from this pendulum
-     *
-     * @param child - the pendulum to detach
-     */
-    void detachChild(Pendulum *child);
 
     /**
      * Updates the position of this Pendulum and all children

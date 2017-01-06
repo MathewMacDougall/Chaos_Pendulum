@@ -1,6 +1,7 @@
 #include "pendulum.hpp"
 #include <cmath>
 #include <stdlib.h>
+#include <algorithm>
 
 Pendulum::Pendulum(double length, double angle, double mass, Pendulum &parent) {
     this->length = length;
@@ -56,12 +57,18 @@ void Pendulum::attachTo(Point newBase) {
 }
 
 void Pendulum::attachChild(Pendulum *newChild) {
-
+    if(std::find(getChildPendulums().begin(), getChildPendulums().end(), newChild) != getChildPendulums().end()) {
+        // This child is already attached. Do nothing
+    } else {
+        childPendulums.push_back(newChild);
+        newChild->attachTo(*this);
+    }
 }
 
 void Pendulum::detachChild(Pendulum *child) {
-
-
+    if(std::find(getChildPendulums().begin(), getChildPendulums().end(), child) != getChildPendulums().end()) {
+        childPendulums.erase(std::remove(childPendulums.begin(), childPendulums.end(), child), childPendulums.end())
+    }
 }
 
 void Pendulum::update(double delta_t) {
