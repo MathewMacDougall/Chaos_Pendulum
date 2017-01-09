@@ -15,48 +15,11 @@ int main(int argc, char **argv) {
 
     intPtr += 2;
     intRef += 2;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-    std::cout << "Chaos Pendulum Main exec\n" << std::endl;
-    std::vector<Pendulum*> testVector;
-    Pendulum p1 = Pendulum(1, 0, 3, Point());
-    Pendulum p2 = Pendulum(2, M_PI_4, 2, p1);
-    p1.attachChild(p2);
-
-    testVector.push_back(&p2);
-    //testVector.push_back(2);
-    //testVector.push_back(5);
-    //testVector.push_back(4);
-
-    if((std::find(testVector.begin(), testVector.end(), &p2)) != testVector.end()) {
-        std::cout << "int found";
-    } else {
-        std::cout << "int NOT found";
-    }*/
+    i ++;
+    std::cout << "i = " << i << std::endl;
+    std::cout << "intPtr = " << intPtr << std::endl;
+    std::cout << "val of intPtr = " << *intPtr << std::endl;
+    std::cout << "intRef = " << intRef << std::endl;
 
 }
 

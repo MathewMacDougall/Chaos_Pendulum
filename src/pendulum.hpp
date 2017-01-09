@@ -16,8 +16,7 @@ private:
     double length;
     double angle;
     double mass;
-    const double ANGLE_MODIFIER = 3 * M_PI_2; // Apply to angles to adjust from being relative to "straight down" (3pi/2 rad on the xy-plane)
-                                              // to being relative to the positive x-axis on the xy-plane (o rad)
+
     // TODO: track angular velocity and acceleration
 
     /**
@@ -25,9 +24,11 @@ private:
      *
      * @param child - the pendulum to detach
      */
-    void detachChild(Pendulum *child);
+    void detachChild(Pendulum &child);
 
 public:
+    static constexpr double ANGLE_MODIFIER = 3 * M_PI_2; // Apply to angles to adjust from being relative to "straight down" (3pi/2 rad on the xy-plane)
+    // to being relative to the positive x-axis on the xy-plane (o rad)
 
     /**
      * Constructs a new Pendulum object that anchors to another pendulum
@@ -62,7 +63,7 @@ public:
      *
      * @param newParent - the Pendulum to attach to
      */
-    void attachTo(Point base);
+    void attachTo(const Point base);
 
     /**
      * Attaches newChild as a Child to this
@@ -79,7 +80,7 @@ public:
      *
      * @param delta_t - the change in time to update
      */
-    Point update(double delta_t);
+    Point update(const double delta_t);
 
     /**
      * Returns pointers to all the child pendulums of this

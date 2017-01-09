@@ -26,7 +26,7 @@ Pendulum::Pendulum(double length, double angle, double mass, Point base) {
 void Pendulum::attachTo(Pendulum &newParent) {
     if(isAttachedToPendulum()) {
         if(*getParentPendulum() != newParent) {
-            getParentPendulum()->detachChild(this);
+            getParentPendulum()->detachChild(*this);
             parentPtr = &newParent;
             getParentPendulum()->attachChild(*this);
             update(0.0);
@@ -40,9 +40,9 @@ void Pendulum::attachTo(Pendulum &newParent) {
     }
 }
 
-void Pendulum::attachTo(Point newBase) {
+void Pendulum::attachTo(const Point newBase) {
     if(isAttachedToPendulum()) {
-        getParentPendulum()->detachChild(this);
+        getParentPendulum()->detachChild(*this);
         parentPtr = NULL;
         base = newBase;
         update(0.0);
@@ -56,27 +56,30 @@ void Pendulum::attachTo(Point newBase) {
     }
 }
 
+// TODO: make some args const
 void Pendulum::attachChild(Pendulum &newChild) {
-    std::vector<Pendulum*> test = getChildPendulums();
-    if(std::find(test.begin(), test.end(), &newChild) != test.end()) {
+    std::vector<Pendulum*> children = getChildPendulums();
+    if(std::find(children.begin(), children.end(), &newChild) != children.end()) {
         // This child is already attached. Do nothing
     } else {
         childPendulums.push_back(&newChild);
-        (&newChild)->attachTo(*this);
+        newChild.attachTo(*this);
     }
 }
 
-void Pendulum::detachChild(Pendulum *child) {
-    if(std::find(getChildPendulums().begin(), getChildPendulums().end(), child) != getChildPendulums().end()) {
-        childPendulums.erase(std::remove(childPendulums.begin(), childPendulums.end(), child), childPendulums.end());
+void Pendulum::detachChild(Pendulum &child) {
+    std::vector<Pendulum*> children = getChildPendulums();
+    const std::vector<Pendulum*>::iterator it = std::find(children.begin(), children.end(), &child);
+    if(it != children.end()) {
+        childPendulums.erase(it);
     }
 }
 
-Point Pendulum::update(double delta_t) {
+Point Pendulum::update(const double delta_t) {
     // TODO: do basic physics simulation with recursive updates
 
-    for(auto const& value: childPendulums) {
-        value->update(delta_t);
+    for(unsigned int i = 0; i < getChildPendulums().size(); i++) {
+        getChildPendulums()[i]->update(delta_t);
     }
 
     if(isAttachedToPendulum())
