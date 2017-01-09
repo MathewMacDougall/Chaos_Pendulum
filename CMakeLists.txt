@@ -17,8 +17,22 @@ set(SOURCE_FILES
         src/util/util.hpp
         src/main.cpp
         src/pendulum.cpp
-        src/pendulum.hpp
+        src/pendulum.hpp)
+
+set(POINT_TEST_FILES
+        src/util/point.cpp
+        src/util/point.hpp
         test/pointTest.cpp)
 
+set(PENDULUM_TEST_FILES
+        src/util/point.cpp
+        src/util/point.hpp
+        src/pendulum.cpp
+        src/pendulum.hpp
+        test/pendulumTest.cpp)
+
 add_executable(Chaos_Pendulum ${SOURCE_FILES})
-target_link_libraries(Chaos_Pendulum gtest gtest_main)
+add_executable(Point_Test ${POINT_TEST_FILES})
+add_executable(Pendulum_Test ${PENDULUM_TEST_FILES})
+target_link_libraries(Point_Test gtest gtest_main)
+target_link_libraries(Pendulum_Test gtest gtest_main)

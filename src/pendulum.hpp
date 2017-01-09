@@ -16,6 +16,9 @@ private:
     double length;
     double angle;
     double mass;
+    const double ANGLE_MODIFIER = 3 * M_PI_2; // Apply to angles to adjust from being relative to "straight down" (3pi/2 rad on the xy-plane)
+                                              // to being relative to the positive x-axis on the xy-plane (o rad)
+    // TODO: track angular velocity and acceleration
 
     /**
      * Detached the child from this pendulum
@@ -67,7 +70,7 @@ public:
      *
      * @param newChild - the pendulum to attach
      */
-    void attachChild(Pendulum *newChild);
+    void attachChild(Pendulum &newChild);
 
     /**
      * Updates the position of this Pendulum and all children
@@ -76,7 +79,7 @@ public:
      *
      * @param delta_t - the change in time to update
      */
-    void update(double delta_t);
+    Point update(double delta_t);
 
     /**
      * Returns pointers to all the child pendulums of this
@@ -124,7 +127,8 @@ public:
 
     /**
      * Returns a value 0 <= angle < 2pi representing the angle between the pendulum
-     * arm and the "down" vector in radians
+     * arm and the positive x direction. (The angle of the arm relative tothe positive
+     * x-axis as see on a 2D xy plane)
      *
      * @return a value 0 <= angle < 2pi representing the angle of the pendulum arm
      */
@@ -145,6 +149,15 @@ public:
      * @return true if and only if this equals other
      */
     bool operator==(const Pendulum &other) const;
+
+    /**
+     * Compares this pendulum and other for equality
+     * Returns true if this is not equal to other
+     *
+     * @param other - the other pendulum to compare to
+     * @return true if and only if this is not equal to other
+     */
+    bool operator!=(const Pendulum &other) const;
 
 };
 

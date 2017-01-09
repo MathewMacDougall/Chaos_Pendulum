@@ -40,8 +40,9 @@ void Point::set(double x, double y) {
 }
 
 void Point::rotate(double theta) {
-    xpos = xpos * cos(theta) - ypos * sin(theta);
-    ypos = xpos * sin(theta) + ypos * cos(theta);
+    double xtemp = xpos;
+    xpos = xpos * std::cos(theta) - ypos * std::sin(theta);
+    ypos = xtemp * std::sin(theta) + ypos * std::cos(theta);
 }
 
 Point Point::add(Point b) const {
@@ -62,7 +63,7 @@ Point Point::clone() const {
 }
 
 bool Point::operator==(const Point &other) const {
-    return fabs(xpos - other.x()) < DBL_EPSILON && fabs(ypos - other.y()) < DBL_EPSILON;
+    return fabs(xpos - other.x()) < 10 * DBL_EPSILON && fabs(ypos - other.y()) < 10 * DBL_EPSILON;
 }
 
 bool Point::operator!=(const Point &other) const {
