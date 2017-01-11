@@ -21,18 +21,24 @@ TEST(PointTest, TestObservers) {
 
 TEST(PointTest, TestMutators) {
     Point a;
+
     a.move(-2.9, 11.402);
     EXPECT_EQ(a, Point(-2.9, 11.402));
+
     a.set(-42, 0.01);
     EXPECT_EQ(a, Point(-42, 0.01));
+
     a.set(0, -5.425);
     EXPECT_EQ(a, Point(0, -5.425));
+
     a.set(2, 0);
     a.rotate(M_PI / 2.0);
     EXPECT_EQ(a, Point(0, 2));
+
     a.set(0, 0);
     a.rotate(M_PI);
     EXPECT_EQ(a, Point());
+
     a.set(sqrt(3), sqrt(3));
     a.rotate(-M_PI * 3.0 / 4.0);
     EXPECT_EQ(a, Point(0, -sqrt(6)));

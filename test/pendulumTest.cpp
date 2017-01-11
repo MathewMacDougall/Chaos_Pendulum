@@ -2,9 +2,8 @@
 #include <algorithm>
 #include "../src/util/point.hpp"
 #include "../src/pendulum.hpp"
-#include <iostream>
 
-TEST(PendulumTest, TestObservers) {
+TEST(PendulumTest, TestAbsoluteValueObservers) {
     Point anchor;
     Pendulum p1 = Pendulum(1, -M_PI_4, 4, anchor);
     Pendulum p2 = Pendulum(2, M_PI_2, 3, p1);
@@ -33,10 +32,30 @@ TEST(PendulumTest, TestObservers) {
     ASSERT_EQ(p3.getAngle(), 0);
     ASSERT_EQ(p3.getBasePosition(), Point(2 - sqrt(0.5), -sqrt(0.5)));
     ASSERT_EQ(p3.getBobPosition(), Point(2 - sqrt(0.5), -sqrt(0.5) - 3));
+}
+
+TEST(PendulumTest, TestRelativeObservers) {
+    Point anchor;
+    Pendulum p1 = Pendulum(1, -M_PI_4, 4, anchor);
+    Pendulum p2 = Pendulum(2, M_PI_2, 3, p1);
+    Pendulum p3 = Pendulum(3, 0, 2.5, p2);
+    p1.attachChild(p2);
+    p2.attachChild(p3);
+    p1.update(0.0);
 
     //Observing bob and base positions in terms of parent and child positions
     ASSERT_EQ(p1.getBobPosition(), p2.getBasePosition());
     ASSERT_EQ(p2.getBobPosition(), p3.getBasePosition());
+}
+
+TEST(PendulumTest, TestChildParentRelationships) {
+    Point anchor;
+    Pendulum p1 = Pendulum(1, -M_PI_4, 4, anchor);
+    Pendulum p2 = Pendulum(2, M_PI_2, 3, p1);
+    Pendulum p3 = Pendulum(3, 0, 2.5, p2);
+    p1.attachChild(p2);
+    p2.attachChild(p3);
+    p1.update(0.0);
 
     //Observing parent and child attachments
     ASSERT_EQ(*p2.getParentPendulum(), p1);
@@ -72,7 +91,6 @@ TEST(PendulumTest, TestChangingParents) {
     ASSERT_TRUE(p2.getChildPendulums().empty());
     ASSERT_EQ(p1.getChildPendulums().size(), 2);
 
-/*
     p2.attachTo(anchor);
     ASSERT_TRUE(p1.getParentPendulum() == NULL);
     ASSERT_TRUE(p2.getParentPendulum() == NULL);
@@ -80,7 +98,6 @@ TEST(PendulumTest, TestChangingParents) {
     ASSERT_TRUE(std::find(p1.getChildPendulums().begin(), p1.getChildPendulums().end(), &p3) != p1.getChildPendulums().end());
     ASSERT_TRUE(p2.getChildPendulums().empty());
     ASSERT_EQ(p1.getChildPendulums().size(), 1);
-    */
 }
 
 int main(int argc, char **argv) {
