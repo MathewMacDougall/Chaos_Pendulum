@@ -62,8 +62,7 @@ TEST(PendulumTest, TestChangingParents) {
     ASSERT_EQ(p3.getParentPendulum(), &p2);
     ASSERT_TRUE(std::find(p1.getChildPendulums().begin(), p1.getChildPendulums().end(), &p2) != p1.getChildPendulums().end());
     ASSERT_TRUE(std::find(p2.getChildPendulums().begin(), p2.getChildPendulums().end(), &p3) != p2.getChildPendulums().end());
-    // TODO: investigate segfault
-/*
+
     p3.attachTo(p1);
     ASSERT_TRUE(p1.getParentPendulum() == NULL);
     ASSERT_EQ(p2.getParentPendulum(), &p1);
@@ -72,7 +71,7 @@ TEST(PendulumTest, TestChangingParents) {
     ASSERT_TRUE(std::find(p1.getChildPendulums().begin(), p1.getChildPendulums().end(), &p3) != p1.getChildPendulums().end());
     ASSERT_TRUE(p2.getChildPendulums().empty());
     ASSERT_EQ(p1.getChildPendulums().size(), 2);
-    */
+
 /*
     p2.attachTo(anchor);
     ASSERT_TRUE(p1.getParentPendulum() == NULL);

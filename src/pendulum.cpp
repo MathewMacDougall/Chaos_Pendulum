@@ -68,9 +68,8 @@ void Pendulum::attachChild(Pendulum &newChild) {
 }
 
 void Pendulum::detachChild(Pendulum &child) {
-    std::vector<Pendulum*> children = getChildPendulums();
-    const std::vector<Pendulum*>::iterator it = std::find(children.begin(), children.end(), &child);
-    if(it != children.end()) {
+    const std::vector<Pendulum*>::iterator it = std::find(childPendulums.begin(), childPendulums.end(), &child);
+    if(it != childPendulums.end()) {
         childPendulums.erase(it);
     }
 }
@@ -91,8 +90,9 @@ Point Pendulum::update(const double delta_t) {
 }
 
 
-std::vector<Pendulum*> Pendulum::getChildPendulums() const {
-    return this->childPendulums;
+const std::vector<Pendulum*>& Pendulum::getChildPendulums() {
+    const std::vector<Pendulum*>& cp = childPendulums;
+    return cp;
 }
 
 bool Pendulum::isAttachedToPendulum() const {
@@ -126,7 +126,7 @@ double Pendulum::getMass() const {
 bool Pendulum::operator==(const Pendulum &other) const {
     return getMass() == other.getMass() && getLength() == other.getLength()
             && getParentPendulum() == other.getParentPendulum()
-            && getChildPendulums() == other.getChildPendulums()
+//            && getChildPendulums() == other.getChildPendulums()
             && getBobPosition() == other.getBobPosition();
 }
 

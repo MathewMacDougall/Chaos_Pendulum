@@ -87,7 +87,7 @@ public:
      *
      * @return pointers to all child pendulums of this
      */
-    std::vector<Pendulum*> getChildPendulums() const;
+    const std::vector<Pendulum*>& getChildPendulums();
 
     /**
      * Checks if this pendulum is attached to a parent pendulum
