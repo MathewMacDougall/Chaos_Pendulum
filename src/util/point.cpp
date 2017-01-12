@@ -58,6 +58,10 @@ Point Point::norm() const {
     return Point(xpos / length, ypos / length);
 }
 
+Point Point::perp() const {
+    return Point(-ypos, xpos);
+}
+
 Point Point::clone() const {
     return Point(xpos, ypos);
 }

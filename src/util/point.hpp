@@ -8,50 +8,126 @@ class Point final {
         double ypos;
 
     public:
-        // Creates a new Point object with coordinates (0, 0)
+        /**
+         * Constructs a new Point object with coordinates (0, 0)
+         */
         Point();
 
-        // Creates a new Point object with coordinates (x, y)
+        /**
+         * Constructs a new Point object with coordinates (x, y)
+         *
+         * @param x -  the x-coordinate of the Point
+         * @param y - the y-coordinate of the Point
+         */
         Point(double, double);
 
-        // Returns the x position of the Point
+        /**
+         * Returns the x coordinate of the Point
+         *
+         * @return the x coordinate of the Point
+         */
         double x() const;
 
-        // Returns the y position of the Point
+        /**
+         * Returns the y coordinate of the Point
+         *
+         * @return the y coordinate of the Point
+         */
         double y() const;
 
-        // Returns the length between the Point and (0, 0)
+        /** Returns the length of the vector between this Point and (0, 0)
+         *
+         * @return the length of the vector between this Point and (0, 0)
+         */
         double len() const;
 
-        // Resurns the squared value of the length of the Point
+        /**
+         * Returns the squared length of the vector bewteen this Point and (0, 0)
+         *
+         * @return the sqaured length of the vector between this Point and (0, 0)
+         */
         double lensq() const;
 
-        // Translated the Point by (x, y)
+        /**
+         * Translates the coordinate of this Point by (x, y)
+         *
+         * @param x - the x coordinate to translate by
+         * @param y  - the y coordinate to translate by
+         */
         void move(double x, double y);
 
-        // Changes the Point's coordinates to (x, y)
+        /**
+         * Sets this Point's coordinates to (x, y)
+         *
+         * @param x - the new x coordinate of the Point
+         * @param y - the new y coordinate of the Point
+         */
         void set(double x, double y);
 
-        // Rotates the point by theta radians. Positive theta
-        // rotates counterclockwise, negative theta rotates clockwise
+        /**
+         * Rotates this Point by theta radians around the origin.
+         * Positive theta values rotate counter-clockwise, negative theta values
+         * rotate clockwise
+         *
+         * @param theta - the radians to rotate the Point by. Positive values rotate counter-clockwise,
+         *                negative values rotate clockwise
+         */
         void rotate(double theta);
 
-        // Adds b to the Point and returns a new Point
+        /**
+         * Returns a new Point representing this Point plus Point b
+         *
+         * @param b - the Point to add to this Point
+         * @return a new Point with the value of this Point added to b
+         */
         Point add(Point b) const;
 
-        // Subtracts b from the Point and returns a new Point
+        /**
+        * Returns a new Point representing This Point minus Point b
+        *
+        * @param b - the Point to subtract from this Point
+        * @return a new Point with the value of b subtracted from this Point
+        */
         Point sub(Point b) const;
 
-        // Returns a new Point with len() = 1.0
+        /**
+         * Returns a new Point representing the unit vector of this Point
+         *
+         * @return a new Point representing the unit vector of this Point
+         */
         Point norm() const;
 
-        // Creates and returns an identical Point object
+        /**
+         * Returns a new Point representing the vector perpendicular to this Point
+         *
+         * @return a new Point representing the vector perpendicular to this Point.
+         *         this perpendicular vector is always facing in the direction of this Point rotated counter-clockwise
+         */
+        Point perp() const;
+
+        /**
+         * Returns a copy of this Point
+         *
+         * @return a new Point with the same values (x, y) as this Point
+         */
         Point clone() const;
 
-        // Returns true if and only if this is equal to other
+        /**
+         * Overrides the == operator. Returns true if and only if this Point has the same
+         * x and y coordinates of other
+         *
+         * @param other - the point to compare with for equality
+         * @return true if this Point has the same x and y coordinates as other, and false otherwise
+         */
         bool operator==(const Point& other) const;
 
-        // Returns true if and only if this point is not equal to other
+        /**
+        * Overrides the != operator. Returns true if and only if at least one of this Point's x or y coordinates
+        * does not equal the x or y coordinate of other
+        *
+        * @param other - the point to compare with for equality
+        * @return true if this Point has at least 1 different x or y coordinate compared to other, false otherwise
+         */
         bool operator!=(const Point& other) const;
 
 };

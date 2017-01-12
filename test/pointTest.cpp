@@ -17,6 +17,9 @@ TEST(PointTest, TestObservers) {
     EXPECT_NE(c, d);
     EXPECT_EQ(c, c.clone());
     EXPECT_TRUE(c != d);
+    EXPECT_EQ(a.perp(), Point());
+    EXPECT_EQ(b.perp(), Point(-1, 1));
+    EXPECT_EQ(c.perp(), Point(-3E9, -0.0456));
 }
 
 TEST(PointTest, TestMutators) {
@@ -44,7 +47,7 @@ TEST(PointTest, TestMutators) {
     EXPECT_EQ(a, Point(0, -sqrt(6)));
 }
 
-TEST(PointTest, TestOperations) {
+TEST(PointTest, TestArithmeticOperations) {
     Point a = Point(3.5, -1.25);
     Point b = Point(-0.1, 2);
     Point c;
