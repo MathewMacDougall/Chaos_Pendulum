@@ -1,13 +1,13 @@
 #include <cmath>
 #include <algorithm>
 #include "pendulum.hpp"
-#include <iostream>
 
 Pendulum::Pendulum(double length, double angle, double mass, Pendulum &parent) {
     this->length = length;
     this->angle = angle;
     this->mass = mass;
     parentPtr = &parent;
+    parentPtr->attachChild(*this);
     base = parentPtr->getBobPosition();
     bob = base.add(Point(length * cos(angle + ANGLE_MODIFIER), length * sin(angle + ANGLE_MODIFIER)));
 }
@@ -21,7 +21,12 @@ Pendulum::Pendulum(double length, double angle, double mass, Point base) {
     bob = base.add(Point(length * cos(angle + ANGLE_MODIFIER), length * sin(angle + ANGLE_MODIFIER)));
 }
 
-// TODO: add function/destructor to delete pendulums (should delete all children too, not just remove pointer)
+Pendulum::~Pendulum() {
+    // TODO: Create destructor - this code causes SIGABRT in tests?
+    //for(Pendulum* child : childPendulums) {
+    //    delete(child);
+    //}
+}
 
 void Pendulum::attachTo(Pendulum &newParent) {
     if(isAttachedToPendulum()) {
@@ -56,10 +61,8 @@ void Pendulum::attachTo(const Point newBase) {
     }
 }
 
-// TODO: make some args const
 void Pendulum::attachChild(Pendulum &newChild) {
-    std::vector<Pendulum*> children = getChildPendulums();
-    if(std::find(children.begin(), children.end(), &newChild) != children.end()) {
+    if(hasChild(&newChild)) {
         // This child is already attached. Do nothing
     } else {
         childPendulums.push_back(&newChild);
@@ -74,11 +77,11 @@ void Pendulum::detachChild(Pendulum &child) {
     }
 }
 
-Point Pendulum::update(const double delta_t) {
+const Point Pendulum::update(const double delta_t) {
     // TODO: do basic physics simulation with recursive updates
 
-    for(unsigned int i = 0; i < getChildPendulums().size(); i++) {
-        getChildPendulums()[i]->update(delta_t);
+    for(unsigned int i = 0; i < childPendulums.size(); i++) {
+        childPendulums[i]->update(delta_t);
     }
 
     if(isAttachedToPendulum())
@@ -89,14 +92,16 @@ Point Pendulum::update(const double delta_t) {
     return Point();
 }
 
-
-const std::vector<Pendulum*>& Pendulum::getChildPendulums() {
-    const std::vector<Pendulum*>& cp = childPendulums;
-    return cp;
-}
-
 bool Pendulum::isAttachedToPendulum() const {
     return this->parentPtr != NULL;
+}
+
+bool Pendulum::hasChild(Pendulum *child) const {
+    return std::find(childPendulums.begin(), childPendulums.end(), child) != childPendulums.end();
+}
+
+long Pendulum::getNumChildren() const {
+    return this->childPendulums.size();
 }
 
 Pendulum* Pendulum::getParentPendulum() const {
@@ -126,7 +131,7 @@ double Pendulum::getMass() const {
 bool Pendulum::operator==(const Pendulum &other) const {
     return getMass() == other.getMass() && getLength() == other.getLength()
             && getParentPendulum() == other.getParentPendulum()
-//            && getChildPendulums() == other.getChildPendulums()
+            && childPendulums == other.childPendulums
             && getBobPosition() == other.getBobPosition();
 }
 

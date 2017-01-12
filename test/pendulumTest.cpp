@@ -1,5 +1,4 @@
 #include <gtest/gtest.h>
-#include <algorithm>
 #include "../src/util/point.hpp"
 #include "../src/pendulum.hpp"
 
@@ -8,8 +7,6 @@ TEST(PendulumTest, TestAbsoluteValueObservers) {
     Pendulum p1 = Pendulum(1, -M_PI_4, 4, anchor);
     Pendulum p2 = Pendulum(2, M_PI_2, 3, p1);
     Pendulum p3 = Pendulum(3, 0, 2.5, p2);
-    p1.attachChild(p2);
-    p2.attachChild(p3);
     p1.update(0.0);
 
     //Observing p1 and absolute positions
@@ -39,8 +36,6 @@ TEST(PendulumTest, TestRelativeObservers) {
     Pendulum p1 = Pendulum(1, -M_PI_4, 4, anchor);
     Pendulum p2 = Pendulum(2, M_PI_2, 3, p1);
     Pendulum p3 = Pendulum(3, 0, 2.5, p2);
-    p1.attachChild(p2);
-    p2.attachChild(p3);
     p1.update(0.0);
 
     //Observing bob and base positions in terms of parent and child positions
@@ -53,18 +48,16 @@ TEST(PendulumTest, TestChildParentRelationships) {
     Pendulum p1 = Pendulum(1, -M_PI_4, 4, anchor);
     Pendulum p2 = Pendulum(2, M_PI_2, 3, p1);
     Pendulum p3 = Pendulum(3, 0, 2.5, p2);
-    p1.attachChild(p2);
-    p2.attachChild(p3);
     p1.update(0.0);
 
     //Observing parent and child attachments
     ASSERT_EQ(*p2.getParentPendulum(), p1);
     ASSERT_EQ(*p3.getParentPendulum(), p2);
-    ASSERT_EQ(p1.isAttachedToPendulum(), false);
-    ASSERT_EQ(p2.isAttachedToPendulum(), true);
-    ASSERT_EQ(p3.isAttachedToPendulum(), true);
-    ASSERT_EQ(p1.getChildPendulums()[0], &p2);
-    ASSERT_EQ(p2.getChildPendulums()[0], &p3);
+    ASSERT_FALSE(p1.isAttachedToPendulum());
+    ASSERT_TRUE(p2.isAttachedToPendulum());
+    ASSERT_TRUE(p3.isAttachedToPendulum());
+    ASSERT_TRUE(p1.hasChild(&p2));
+    ASSERT_TRUE(p2.hasChild(&p3));
 }
 
 TEST(PendulumTest, TestChangingParents) {
@@ -72,32 +65,30 @@ TEST(PendulumTest, TestChangingParents) {
     Pendulum p1 = Pendulum(1, -M_PI_4, 4, anchor);
     Pendulum p2 = Pendulum(2, M_PI_2, 3, p1);
     Pendulum p3 = Pendulum(3, 0, 2.5, p2);
-    p1.attachChild(p2);
-    p2.attachChild(p3);
     p1.update(0.0);
 
     ASSERT_TRUE(p1.getParentPendulum() == NULL);
     ASSERT_EQ(p2.getParentPendulum(), &p1);
     ASSERT_EQ(p3.getParentPendulum(), &p2);
-    ASSERT_TRUE(std::find(p1.getChildPendulums().begin(), p1.getChildPendulums().end(), &p2) != p1.getChildPendulums().end());
-    ASSERT_TRUE(std::find(p2.getChildPendulums().begin(), p2.getChildPendulums().end(), &p3) != p2.getChildPendulums().end());
+    ASSERT_TRUE(p1.hasChild(&p2));
+    ASSERT_TRUE(p2.hasChild(&p3));
 
     p3.attachTo(p1);
     ASSERT_TRUE(p1.getParentPendulum() == NULL);
     ASSERT_EQ(p2.getParentPendulum(), &p1);
     ASSERT_EQ(p3.getParentPendulum(), &p1);
-    ASSERT_TRUE(std::find(p1.getChildPendulums().begin(), p1.getChildPendulums().end(), &p2) != p1.getChildPendulums().end());
-    ASSERT_TRUE(std::find(p1.getChildPendulums().begin(), p1.getChildPendulums().end(), &p3) != p1.getChildPendulums().end());
-    ASSERT_TRUE(p2.getChildPendulums().empty());
-    ASSERT_EQ(p1.getChildPendulums().size(), 2);
+    ASSERT_TRUE(p1.hasChild(&p2));
+    ASSERT_TRUE(p1.hasChild(&p3));
+    ASSERT_EQ(p2.getNumChildren(), 0);
+    ASSERT_EQ(p1.getNumChildren(), 2);
 
     p2.attachTo(anchor);
     ASSERT_TRUE(p1.getParentPendulum() == NULL);
     ASSERT_TRUE(p2.getParentPendulum() == NULL);
     ASSERT_EQ(p3.getParentPendulum(), &p1);
-    ASSERT_TRUE(std::find(p1.getChildPendulums().begin(), p1.getChildPendulums().end(), &p3) != p1.getChildPendulums().end());
-    ASSERT_TRUE(p2.getChildPendulums().empty());
-    ASSERT_EQ(p1.getChildPendulums().size(), 1);
+    ASSERT_TRUE(p1.hasChild(&p3));
+    ASSERT_EQ(p2.getNumChildren(), 0);
+    ASSERT_EQ(p1.getNumChildren(), 1);
 }
 
 int main(int argc, char **argv) {

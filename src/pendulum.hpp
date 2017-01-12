@@ -4,12 +4,11 @@
 #include <vector>
 #include "util/point.hpp"
 
-
 class Pendulum {
 
 private:
     Pendulum *parentPtr;
-    // TODO: make this an unordered set or something with faster access
+    // TODO: make childPendulums an unordered set or something with faster access
     std::vector<Pendulum*> childPendulums;
     Point base;
     Point bob;
@@ -20,7 +19,7 @@ private:
     // TODO: track angular velocity and acceleration
 
     /**
-     * Detached the child from this pendulum
+     * Detach the child from this pendulum
      *
      * @param child - the pendulum to detach
      */
@@ -28,46 +27,55 @@ private:
 
 public:
     static constexpr double ANGLE_MODIFIER = 3 * M_PI_2; // Apply to angles to adjust from being relative to "straight down" (3pi/2 rad on the xy-plane)
-    // to being relative to the positive x-axis on the xy-plane (o rad)
+                                                         // to being relative to the positive x-axis on the xy-plane (o rad)
 
     /**
-     * Constructs a new Pendulum object that anchors to another pendulum
+     * Constructs a new Pendulum object that anchors to another pendulum. The parent
+     * Pendulum must already exist and not be NULL
      *
      * @param length - the length of the arm of the pendulum
      * @param angle - the initial angle of the pendulum
      * @param mass - the mass of the pendulum weight
-     * @param parent - the pendulum this pendulum is attached to
+     * @param parent - the pendulum this Pendulum is attached to - must already exist and not be NULL
      */
     Pendulum(double length, double angle, double mass, Pendulum &parent);
 
     /**
      * Constructs a new Pendulum object that anchors to a fixed point
      *
-     * @param length
-     * @param angle
-     * @param mass
-     * @param base
+     * @param length - the length of the arm of the pendulum
+     * @param angle - the initial angle of the pendulum
+     * @param mass - the mass of the pendulum weight
+     * @param base - the Point that this Pendulum is attached to. Must not be null
      */
     Pendulum(double length, double angle, double mass, Point base);
 
     /**
-     * Attaches this pendulum as the child to another pendulum
-     * Attaches the base of this Pendulum to the bob of the new parent
+     * Destructor for the Pendulum object. Calls the destructor of all child Pendulums
+     * (if applicable) and then deletes itself
+     */
+    ~Pendulum();
+
+    /**
+     * Attaches this pendulum as the child to another pendulum,
+     * attaching the base of this Pendulum to the bob of the new parent.
+     * If this Pendulum is already attached to this parent, does nothing
      *
      * @param newParent - the Pendulum to attach to
      */
     void attachTo(Pendulum &newParent);
 
     /**
-     * Attaches the base of this pendulum to a fixed point
+     * Attaches the base of this pendulum to a fixed point. If this Pendulum is
+     * already attached to this Point, does nothing
      *
-     * @param newParent - the Pendulum to attach to
+     * @param base - the Point to attach to
      */
     void attachTo(const Point base);
 
     /**
-     * Attaches newChild as a Child to this
-     * Attaches the base of newChild to the bob of this
+     * Attaches newChild as a Child to this Pendulum,
+     * attachimng the base of newChild to the bob of this
      *
      * @param newChild - the pendulum to attach
      */
@@ -75,19 +83,12 @@ public:
 
     /**
      * Updates the position of this Pendulum and all children
-     * The new position is based on the current position simluated
+     * The new position is based on the current position simulated
      * delta_t seconds forward in time
      *
      * @param delta_t - the change in time to update
      */
-    Point update(const double delta_t);
-
-    /**
-     * Returns pointers to all the child pendulums of this
-     *
-     * @return pointers to all child pendulums of this
-     */
-    const std::vector<Pendulum*>& getChildPendulums();
+    const Point update(const double delta_t);
 
     /**
      * Checks if this pendulum is attached to a parent pendulum
@@ -98,10 +99,26 @@ public:
     bool isAttachedToPendulum() const;
 
     /**
+     * Checks is this Pendulum has child attached to it
+     *
+     * @param child - a pointer to the child to be checked
+     * @return true if this child is contained in the list of children of this Pendulu,
+     *         and false otherwise
+     */
+    bool hasChild(Pendulum *child) const;
+
+    /**
+     * Returns the number of children attached to this Pendulum
+     *
+     * @return the number of Children attached to this Pendulum
+     */
+    long getNumChildren() const;
+
+    /**
      * Returns the pointer to the parent pendulum of this
      *
      * @return Returns the pointer ot the parent pendulum of this.
-     *         Will return 0 if this pendulum is attached to a fixed point
+     *         Will returns a NULL pointer if this pendulum is attached to a fixed point
      */
     Pendulum* getParentPendulum() const;
 
@@ -128,8 +145,8 @@ public:
 
     /**
      * Returns a value 0 <= angle < 2pi representing the angle between the pendulum
-     * arm and the positive x direction. (The angle of the arm relative tothe positive
-     * x-axis as see on a 2D xy plane)
+     * arm and the negative y direction ("down"). (The angle of the arm relative to the
+     * negative y-axis as see on a 2D x-y plane)
      *
      * @return a value 0 <= angle < 2pi representing the angle of the pendulum arm
      */
