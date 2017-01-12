@@ -53,7 +53,6 @@ class Point final {
 
         // Returns true if and only if this point is not equal to other
         bool operator!=(const Point& other) const;
-
 };
 
 
