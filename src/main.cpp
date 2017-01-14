@@ -6,7 +6,6 @@
 #include <functional>
 #include "pendulum.hpp"
 
-
 class Test {
 private:
     std::vector<int> testVector;
