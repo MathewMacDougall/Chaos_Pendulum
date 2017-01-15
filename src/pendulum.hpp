@@ -15,8 +15,8 @@ private:
     double length;
     double angle;
     double mass;
-
-    // TODO: track angular velocity and acceleration
+    double angularAccel;// Positive is counter-clockwise
+    double angularVel;// Positive is counter-clockwise
 
     /**
      * Detach the child from this pendulum
@@ -89,6 +89,14 @@ public:
      * @param delta_t - the change in time to update
      */
     const Point update(const double delta_t);
+
+    /**
+     * Returns the force component tangent to the arm of this Pendulum
+     *
+     * @param force - the force applied to the pendulum
+     * @return the tangent force to the arm of this Pendulum
+     */
+    Point getTangentForce(Point force);
 
     /**
      * Checks if this pendulum is attached to a parent pendulum

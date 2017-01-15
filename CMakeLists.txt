@@ -13,8 +13,6 @@ set(SOURCE_FILES
         src/util/physics.hpp
         src/util/point.cpp
         src/util/point.hpp
-        src/util/util.cpp
-        src/util/util.hpp
         src/main.cpp
         src/pendulum.cpp
         src/pendulum.hpp)

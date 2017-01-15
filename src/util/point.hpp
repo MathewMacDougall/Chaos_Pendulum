@@ -49,6 +49,14 @@ class Point final {
         double lensq() const;
 
         /**
+         * Returns the angle (in radians) of the vector represented by this Point
+         * The angle is relative to the positive x-axis on the x-y plane
+         *
+         * @return the angle in radians of this Point 0 <= angle < 360
+         */
+        double angle() const;
+
+        /**
          * Translates the coordinate of this Point by (x, y)
          *
          * @param x - the x coordinate to translate by
@@ -98,6 +106,22 @@ class Point final {
         Point norm() const;
 
         /**
+         * Returns a point representing the projection of this Point onto other
+         *
+         * @param other - the Point to project on to
+         * @return the projection of this onto other
+         */
+        Point projectOnto(const Point other);
+
+        /**
+         * Computes the dot product of this Point and other
+         *
+         * @param other - the other point in the dot product
+         * @return the dot product of this and other
+         */
+        double dot(const Point other);
+
+        /**
          * Returns a new Point representing the vector perpendicular to this Point
          *
          * @return a new Point representing the vector perpendicular to this Point.
@@ -130,6 +154,13 @@ class Point final {
          */
         bool operator!=(const Point& other) const;
 
+        /**
+         * Overrides the * operator. Returns the scalar product of this Point and scale
+         *
+         * @param scale - the value to scale this point by
+         * @return the scalar product of this point and scale
+         */
+        Point operator*(const double& scale) const;
 };
 
 
