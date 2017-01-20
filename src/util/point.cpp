@@ -71,8 +71,12 @@ Point Point::norm() const {
 }
 
 Point Point::projectOnto(const Point other) {
-    double scalar = this->dot(other) / other.lensq();
-    return other * scalar;
+    if(other == Point()) {
+        return Point();
+    } else {
+        double scalar = this->dot(other) / other.lensq();
+        return other * scalar;
+    }
 }
 
 double Point::dot(const Point other) {
@@ -85,6 +89,10 @@ Point Point::perp() const {
 
 Point Point::clone() const {
     return Point(xpos, ypos);
+}
+
+bool Point::isSameDirectionAs(Point other, double angleThreshold) {
+    return fabs(angle() - other.angle()) < angleThreshold;
 }
 
 bool Point::operator==(const Point &other) const {

@@ -137,6 +137,15 @@ class Point final {
         Point clone() const;
 
         /**
+         * Returns true if this Point points in the same direction as other, withing a threshold
+         *
+         * @param other - the other point to compare direction to
+         * @param angleThreshold - the angle threshold (in radians)
+         * @return true if this Point's angle is within angleTolerance of other
+         */
+        bool isSameDirectionAs(Point other, double angleThreshold = M_PI / 100);
+
+        /**
          * Overrides the == operator. Returns true if and only if this Point has the same
          * x and y coordinates of other
          *

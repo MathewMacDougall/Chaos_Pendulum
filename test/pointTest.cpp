@@ -23,6 +23,9 @@ TEST(PointTest, TestObservers) {
     EXPECT_EQ(a.perp(), Point());
     EXPECT_EQ(b.perp(), Point(-1, 1));
     EXPECT_EQ(c.perp(), Point(-3E9, -0.0456));
+    EXPECT_FALSE(b.isSameDirectionAs(d));
+    EXPECT_TRUE(b.isSameDirectionAs(d, M_PI_4));
+    EXPECT_TRUE(c.isSameDirectionAs(c));
 }
 
 TEST(PointTest, TestMutators) {
@@ -81,7 +84,8 @@ TEST(PointTest, TestArithmeticOperations) {
     EXPECT_EQ(e.projectOnto(f), Point());
     EXPECT_EQ(b.projectOnto(Point(-4, 0)), Point(-0.1, 0));
     EXPECT_EQ(e.projectOnto(e), e);
-    EXPECT_EQ(d.projectOnto(a), Point(d * cos(abs(d.angle() - a.angle()))));
+    EXPECT_DOUBLE_EQ(d.projectOnto(a).len(), 1.6816819849907811);
+    EXPECT_EQ(d.projectOnto(a), Point((double) 350 / 221, (double) -125 / 221));
 }
 
 int main(int argc, char **argv) {

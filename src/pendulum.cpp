@@ -104,7 +104,7 @@ const Point Pendulum::update(const double delta_t) {
 }
 
 Point Pendulum::getTangentForce(Point force) {
-
+    return force.projectOnto(bob.sub(base).perp());
 }
 
 bool Pendulum::isAttachedToPendulum() const {
