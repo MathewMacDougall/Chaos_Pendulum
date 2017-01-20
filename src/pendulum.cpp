@@ -112,7 +112,7 @@ const Point Pendulum::update(const double delta_t) {
     bob = base.add(Point(length * cos(angle + ANGLE_MODIFIER), length * sin(angle + ANGLE_MODIFIER)));
 
     double centripetalForceMag = mass * (angularVel * length) * (angularVel * length) / length;
-    return base.sub(bob).norm() * centripetalForceMag;
+    return base.sub(bob).norm() * -centripetalForceMag;
 }
 
 // TODO: add tests
