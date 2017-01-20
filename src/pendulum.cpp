@@ -90,8 +90,18 @@ const Point Pendulum::update(const double delta_t) {
     }
 
     Point forceGrav = Point(0, mass * -Physics::ACCEL_G);
-    Point forceTangent = centripetalForce.add(forceGrav);
-    angularAccel = forceTangent.len() / mass / length;
+    Point forceSum = centripetalForce.add(forceGrav);
+    Point forceTangent = getTangentForce(forceSum);
+
+    /* perp() always returns pointing "counterclockwise", so if the tangent force is the same direction
+     * as it, is the force (and therefore accel) will be in the counterclockwise direction and therefore positive.
+     * Vice-verso for negative
+     */
+    if(forceTangent.isSameDirectionAs(bob.sub(base).perp()))
+        angularAccel = forceTangent.len() / mass / length;
+    else
+        angularAccel = -forceTangent.len() / mass / length;
+
     angularVel += angularAccel;
     angle += angularVel;
 
@@ -100,7 +110,8 @@ const Point Pendulum::update(const double delta_t) {
 
     bob = base.add(Point(length * cos(angle + ANGLE_MODIFIER), length * sin(angle + ANGLE_MODIFIER)));
 
-    return Point();
+    double centripetalForceMag = mass * (angularVel * length) * (angularVel * length) / length;
+    return base.sub(bob).norm() * centripetalForceMag;
 }
 
 Point Pendulum::getTangentForce(Point force) {
