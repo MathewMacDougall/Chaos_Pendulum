@@ -19,7 +19,7 @@ TEST(PointTest, TestObservers) {
     EXPECT_TRUE(c != d);
     EXPECT_DOUBLE_EQ(b.angle(), M_PI_4);
     EXPECT_DOUBLE_EQ(a.angle(), 0);
-    EXPECT_DOUBLE_EQ(c.angle(), atan(c.y() / c.x()));
+    EXPECT_DOUBLE_EQ(c.angle(), 1.5707963268100966);
     EXPECT_EQ(a.perp(), Point());
     EXPECT_EQ(b.perp(), Point(-1, 1));
     EXPECT_EQ(c.perp(), Point(-3E9, -0.0456));

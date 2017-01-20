@@ -29,14 +29,13 @@ double Point::lensq() const {
 }
 
 double Point::angle() const {
-    if(xpos == 0) {
-        if (ypos == 0) {
-            return 0;
-        } else {
-            return ypos > 0 ? M_PI_2 : 3 * M_PI_4;
-        }
-    } else {
-        return atan(ypos / xpos);
+    if(len() == 0.0)
+        return 0;
+
+    if(ypos >= 0) {
+        return acos(xpos / len());
+    }else {
+        return 2 * M_PI + acos(xpos / len());
     }
 }
 

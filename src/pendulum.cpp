@@ -91,19 +91,20 @@ const Point Pendulum::update(const double delta_t) {
 
     Point forceGrav = Point(0, mass * -Physics::ACCEL_G);
     Point forceSum = centripetalForce.add(forceGrav);
+
     Point forceTangent = getTangentForce(forceSum);
 
     /* perp() always returns pointing "counterclockwise", so if the tangent force is the same direction
      * as it, is the force (and therefore accel) will be in the counterclockwise direction and therefore positive.
-     * Vice-verso for negative
+     * Vice-versa for negative
      */
-    if(forceTangent.isSameDirectionAs(bob.sub(base).perp()))
+    if(forceTangent.isSameDirectionAs(bob.sub(base).perp(), M_PI / 16.0))
         angularAccel = forceTangent.len() / mass / length;
     else
         angularAccel = -forceTangent.len() / mass / length;
 
-    angularVel += angularAccel;
-    angle += angularVel;
+    angularVel += angularAccel * delta_t;
+    angle += angularVel * delta_t;
 
     if(isAttachedToPendulum())
         base = parentPtr->getBobPosition();
