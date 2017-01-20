@@ -1,4 +1,3 @@
-#include <cmath>
 #include <float.h>
 #include "point.hpp"
 #include "../pendulum.hpp"

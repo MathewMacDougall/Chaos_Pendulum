@@ -3,6 +3,7 @@
 
 #include <vector>
 #include "util/point.hpp"
+#include <cmath>
 
 class Pendulum {
 

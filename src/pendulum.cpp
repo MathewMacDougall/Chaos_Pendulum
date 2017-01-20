@@ -1,4 +1,3 @@
-#include <cmath>
 #include <algorithm>
 #include "pendulum.hpp"
 #include "util/physics.hpp"
@@ -82,6 +81,7 @@ void Pendulum::detachChild(Pendulum &child) {
     }
 }
 
+// TODO: add tests for update()?
 const Point Pendulum::update(const double delta_t) {
     Point centripetalForce;
 
@@ -114,6 +114,7 @@ const Point Pendulum::update(const double delta_t) {
     return base.sub(bob).norm() * centripetalForceMag;
 }
 
+// TODO: add tests
 Point Pendulum::getTangentForce(Point force) {
     return force.projectOnto(bob.sub(base).perp());
 }

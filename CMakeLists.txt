@@ -27,7 +27,7 @@ set(PENDULUM_TEST_FILES
         src/pendulum.hpp
         test/pendulumTest.cpp)
 
-add_executable(Chaos_Pendulum ${SOURCE_FILES} ${QT_FILES})
+add_executable(Chaos_Pendulum ${SOURCE_FILES})
 add_executable(Point_Test ${POINT_TEST_FILES})
 add_executable(Pendulum_Test ${PENDULUM_TEST_FILES})
 target_link_libraries(Point_Test gtest gtest_main)
