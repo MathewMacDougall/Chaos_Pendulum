@@ -7,8 +7,6 @@ include_directories(lib/googletest-master/googletest/include)
 include_directories(lib/googletest-master/googlemock/include)
 
 set(SOURCE_FILES
-        src/util/angle.cpp
-        src/util/angle.hpp
         src/util/physics.cpp
         src/util/physics.hpp
         src/util/point.cpp
