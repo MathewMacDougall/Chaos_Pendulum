@@ -29,6 +29,18 @@ double Point::lensq() const {
     return xpos*xpos + ypos*ypos;
 }
 
+double Point::angle() const {
+    if(xpos == 0) {
+        if (ypos == 0) {
+            return 0;
+        } else {
+            return ypos > 0 ? M_PI_2 : 3 * M_PI_4;
+        }
+    } else {
+        return atan(ypos / xpos);
+    }
+}
+
 void Point::move(double x, double y) {
     xpos += x;
     ypos += y;
@@ -58,8 +70,29 @@ Point Point::norm() const {
     return Point(xpos / length, ypos / length);
 }
 
+Point Point::projectOnto(const Point other) {
+    if(other == Point()) {
+        return Point();
+    } else {
+        double scalar = this->dot(other) / other.lensq();
+        return other * scalar;
+    }
+}
+
+double Point::dot(const Point other) {
+    return xpos * other.x() + ypos * other.y();
+}
+
+Point Point::perp() const {
+    return Point(-ypos, xpos);
+}
+
 Point Point::clone() const {
     return Point(xpos, ypos);
+}
+
+bool Point::isSameDirectionAs(Point other, double angleThreshold) {
+    return fabs(angle() - other.angle()) < angleThreshold;
 }
 
 bool Point::operator==(const Point &other) const {
@@ -68,4 +101,8 @@ bool Point::operator==(const Point &other) const {
 
 bool Point::operator!=(const Point &other) const {
     return !(*this == other);
+}
+
+Point Point::operator*(const double &scale) const {
+    return Point(xpos * scale, ypos * scale);
 }

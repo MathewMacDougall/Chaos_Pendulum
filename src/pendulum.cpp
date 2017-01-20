@@ -1,6 +1,7 @@
 #include <cmath>
 #include <algorithm>
 #include "pendulum.hpp"
+#include "util/physics.hpp"
 
 Pendulum::Pendulum(double length, double angle, double mass, Pendulum &parent) {
     this->length = length;
@@ -10,6 +11,8 @@ Pendulum::Pendulum(double length, double angle, double mass, Pendulum &parent) {
     parentPtr->attachChild(*this);
     base = parentPtr->getBobPosition();
     bob = base.add(Point(length * cos(angle + ANGLE_MODIFIER), length * sin(angle + ANGLE_MODIFIER)));
+    angularAccel = 0.0;
+    angularVel = 0.0;
 }
 
 Pendulum::Pendulum(double length, double angle, double mass, Point base) {
@@ -19,6 +22,8 @@ Pendulum::Pendulum(double length, double angle, double mass, Point base) {
     parentPtr = NULL; //There is no parent for this pendulum, so parentPtr points to nothing
     this->base = base;
     bob = base.add(Point(length * cos(angle + ANGLE_MODIFIER), length * sin(angle + ANGLE_MODIFIER)));
+    angularAccel = 0.0;
+    angularVel = 0.0;
 }
 
 Pendulum::~Pendulum() {
@@ -78,18 +83,39 @@ void Pendulum::detachChild(Pendulum &child) {
 }
 
 const Point Pendulum::update(const double delta_t) {
-    // TODO: do basic physics simulation with recursive updates
+    Point centripetalForce;
 
     for(unsigned int i = 0; i < childPendulums.size(); i++) {
-        childPendulums[i]->update(delta_t);
+        centripetalForce.add(childPendulums[i]->update(delta_t));
     }
+
+    Point forceGrav = Point(0, mass * -Physics::ACCEL_G);
+    Point forceSum = centripetalForce.add(forceGrav);
+    Point forceTangent = getTangentForce(forceSum);
+
+    /* perp() always returns pointing "counterclockwise", so if the tangent force is the same direction
+     * as it, is the force (and therefore accel) will be in the counterclockwise direction and therefore positive.
+     * Vice-verso for negative
+     */
+    if(forceTangent.isSameDirectionAs(bob.sub(base).perp()))
+        angularAccel = forceTangent.len() / mass / length;
+    else
+        angularAccel = -forceTangent.len() / mass / length;
+
+    angularVel += angularAccel;
+    angle += angularVel;
 
     if(isAttachedToPendulum())
         base = parentPtr->getBobPosition();
 
     bob = base.add(Point(length * cos(angle + ANGLE_MODIFIER), length * sin(angle + ANGLE_MODIFIER)));
 
-    return Point();
+    double centripetalForceMag = mass * (angularVel * length) * (angularVel * length) / length;
+    return base.sub(bob).norm() * centripetalForceMag;
+}
+
+Point Pendulum::getTangentForce(Point force) {
+    return force.projectOnto(bob.sub(base).perp());
 }
 
 bool Pendulum::isAttachedToPendulum() const {
