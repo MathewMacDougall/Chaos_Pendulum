@@ -3,14 +3,18 @@
 #include <QPainter>
 #include "src/util/point.hpp"
 #include <iostream>
+#include <QTimer>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow), p1(150, 1, 3, Point()), p2(150, M_PI_2, 5, p1)
+    ui(new Ui::MainWindow), p1(150, -2, 300000, Point()), p2(150, 0.9 * M_PI, 50, p1)
 {
     ui->setupUi(this);
     p1.update(0.0);
     p2.update(0.0);
+
+    connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
+    timer.start(0.05);
 }
 
 MainWindow::~MainWindow()
@@ -18,6 +22,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+// TODO: allow to paint arbitrary number of Pendulums. Add Pendulum controller?
 void MainWindow::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
@@ -25,13 +30,13 @@ void MainWindow::paintEvent(QPaintEvent *)
     painter.scale(1, -1);
 
     QPen bobPen(Qt::red);
-    bobPen.setWidth(10);
+    bobPen.setWidth(15);
 
     QPen linePen(Qt::gray);
-    linePen.setWidth(3);
+    linePen.setWidth(5);
 
     QPen basePen(Qt::black);
-    basePen.setWidth(15);
+    basePen.setWidth(20);
 
     //draw base of pendulum system
     painter.setPen(basePen);
@@ -44,8 +49,8 @@ void MainWindow::paintEvent(QPaintEvent *)
     painter.drawPoint(p1.getBobPosition().x(), p1.getBobPosition().y());
 
     //draw base of pendulum system
-    painter.setPen(basePen);
-    painter.drawPoint((int)p2.getBasePosition().x(), (int)p2.getBasePosition().y());
+    //painter.setPen(basePen);
+    //painter.drawPoint((int)p2.getBasePosition().x(), (int)p2.getBasePosition().y());
     //draw the pendulum arm
     painter.setPen(linePen);
     painter.drawLine(p2.getBasePosition().x(), p2.getBasePosition().y(), p2.getBobPosition().x(), p2.getBobPosition().y());
@@ -53,6 +58,7 @@ void MainWindow::paintEvent(QPaintEvent *)
     painter.setPen(bobPen);
     painter.drawPoint(p2.getBobPosition().x(), p2.getBobPosition().y());
 
-    p1.update(5.0/100.0);
-    p2.update(5.0/100.0);
+    // TODO: Split rendering from updating
+    p1.update(1.0/100.0);
+    p2.update(1.0/100.0);
 }

@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "src/pendulum.hpp"
+#include <QTimer>
 
 namespace Ui {
 class MainWindow;
@@ -23,6 +24,7 @@ private:
     Ui::MainWindow *ui;
     Pendulum p1;
     Pendulum p2;
+    QTimer timer;
 
 };
 
