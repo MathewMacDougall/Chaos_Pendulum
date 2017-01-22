@@ -1,7 +1,7 @@
 #ifndef POINT_H
 #define POINT_H
 
-#import <cmath>
+#include <cmath>
 
 class Point final {
 
