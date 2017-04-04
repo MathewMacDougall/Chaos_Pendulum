@@ -1,9 +1,12 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
 #include "src/pendulum.hpp"
+#include "src/util/point.hpp"
+#include <QMainWindow>
 #include <QTimer>
+#include <QPainter>
+
 
 namespace Ui {
 class MainWindow;
@@ -19,13 +22,26 @@ public:
 
 protected:
     void paintEvent(QPaintEvent *);
+    void drawPendulum(QPainter *painter, Pendulum p);
+
+public slots:
+    void updateSimulation();
 
 private:
     Ui::MainWindow *ui;
-    Pendulum p1;
-    Pendulum p2;
-    QTimer timer;
 
+    Pendulum p1, p2;
+
+    QTimer renderTimer;
+    QTimer updateTimer;
+
+    int fps;
+    int fps_timer;
+    double fps_dt;
+
+    int ups;
+    int ups_timer;
+    double ups_dt;
 };
 
 
