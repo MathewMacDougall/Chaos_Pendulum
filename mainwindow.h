@@ -9,39 +9,38 @@
 
 
 namespace Ui {
-class MainWindow;
+    class MainWindow;
 }
 
-class MainWindow : public QMainWindow
-{
+class MainWindow : public QMainWindow {
     Q_OBJECT
 
-public:
-    explicit MainWindow(QWidget *parent = 0);
-    ~MainWindow();
+    public:
+        explicit MainWindow(QWidget *parent = 0);
+        ~MainWindow();
 
-protected:
-    void paintEvent(QPaintEvent *);
-    void drawPendulum(QPainter *painter, Pendulum p);
+    protected:
+        void paintEvent(QPaintEvent *);
+        void drawPendulum(QPainter *painter, Pendulum p);
 
-public slots:
-    void updateSimulation();
+    public slots:
+        void updateSimulation();
 
-private:
-    Ui::MainWindow *ui;
+    private:
+        Ui::MainWindow *ui;
 
-    Pendulum p1, p2;
+        Pendulum p1, p2;
 
-    QTimer renderTimer;
-    QTimer updateTimer;
+        QTimer renderTimer;
+        QTimer updateTimer;
 
-    int fps;
-    int fps_timer;
-    double fps_dt;
+        int fps;
+        int fps_timer;
+        double fps_dt;
 
-    int ups;
-    int ups_timer;
-    double ups_dt;
+        int ups;
+        int ups_timer;
+        double ups_dt;
 };
 
 

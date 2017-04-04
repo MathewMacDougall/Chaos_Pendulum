@@ -39,9 +39,6 @@ void MainWindow::updateSimulation() {
 }
 
 void MainWindow::drawPendulum(QPainter *painter, Pendulum p) {
-//    QPainter painter(this);
-//    painter.translate(MainWindow::width() / 2, MainWindow::height() / 2);
-//    painter.scale(1, -1);
 
     QPen bobPen(Qt::red);
     bobPen.setWidth(15);
@@ -67,45 +64,12 @@ void MainWindow::drawPendulum(QPainter *painter, Pendulum p) {
     painter->drawPoint(p.getBobPosition().x(), p.getBobPosition().y());
 }
 
-// TODO: allow to paint arbitrary number of Pendulums. Add Pendulum controller?
 void MainWindow::paintEvent(QPaintEvent *)
 {
-
     QPainter painter(this);
-    painter.translate(MainWindow::width() / 2, MainWindow::height() / 2);
-    painter.scale(1, -1);
+    painter.translate(MainWindow::width() / 2, MainWindow::height() / 2); // set so (0, 0) is the middle of the window
+    painter.scale(1, -1); // flips the y axis so +ve is "up"
 
     drawPendulum(&painter, p1);
     drawPendulum(&painter, p2);
-
-//    QPen bobPen(Qt::red);
-//    bobPen.setWidth(15);
-
-//    QPen linePen(Qt::gray);
-//    linePen.setWidth(5);
-
-//    QPen basePen(Qt::black);
-//    basePen.setWidth(20);
-
-//    //draw base of pendulum system
-//    painter.setPen(basePen);
-//    painter.drawPoint((int)p1.getBasePosition().x(), (int)p1.getBasePosition().y());
-//    //draw the pendulum arm
-//    painter.setPen(linePen);
-//    painter.drawLine(p1.getBasePosition().x(), p1.getBasePosition().y(), p1.getBobPosition().x(), p1.getBobPosition().y());
-//    //draw the pendulum bob
-//    painter.setPen(bobPen);
-//    painter.drawPoint(p1.getBobPosition().x(), p1.getBobPosition().y());
-
-//    //draw base of pendulum system
-//    //painter.setPen(basePen);
-//    //painter.drawPoint((int)p2.getBasePosition().x(), (int)p2.getBasePosition().y());
-//    //draw the pendulum arm
-//    painter.setPen(linePen);
-//    painter.drawLine(p2.getBasePosition().x(), p2.getBasePosition().y(), p2.getBobPosition().x(), p2.getBobPosition().y());
-//    //draw the pendulum bob
-//    painter.setPen(bobPen);
-//    painter.drawPoint(p2.getBobPosition().x(), p2.getBobPosition().y());
-
-//    // TODO: Split rendering from updating
 }
