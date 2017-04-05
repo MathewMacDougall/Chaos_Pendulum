@@ -6,13 +6,14 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow), p1(150, -2, 300000, Point()), p2(150, 0.9 * M_PI, 50, p1)
+    ui(new Ui::MainWindow)//, p1(150, -2, 300000, Point()), p2(150, 0.9 * M_PI, 50, p1)
 {
     ui->setupUi(this);
 
     //p1 = Pendulum(150, -2, 300000, Point());
     //p2 = Pendulum(150, 0.9 * M_PI, 50, p1);
     //p1(150, -2, 300000, Point()), p2(150, 0.9 * M_PI, 50, p1)
+    allPendulums.push_back(Pendulum(150, -2, 300000, Point()));
 
     fps = 30;
     fps_timer = 1000 / fps;
@@ -29,13 +30,14 @@ MainWindow::MainWindow(QWidget *parent) :
     updateTimer.start(ups_timer);
 }
 
-MainWindow::~MainWindow()
-{
+MainWindow::~MainWindow() {
     delete ui;
 }
 
 void MainWindow::updateSimulation() {
-    p1.update(ups_dt);
+    for(unsigned int i = 0; i < allPendulums.size(); i++) {
+        allPendulums[i].update(ups_dt);
+    }
 }
 
 void MainWindow::drawPendulum(QPainter *painter, Pendulum p) {
@@ -64,12 +66,12 @@ void MainWindow::drawPendulum(QPainter *painter, Pendulum p) {
     painter->drawPoint(p.getBobPosition().x(), p.getBobPosition().y());
 }
 
-void MainWindow::paintEvent(QPaintEvent *)
-{
+void MainWindow::paintEvent(QPaintEvent *) {
     QPainter painter(this);
     painter.translate(MainWindow::width() / 2, MainWindow::height() / 2); // set so (0, 0) is the middle of the window
     painter.scale(1, -1); // flips the y axis so +ve is "up"
 
-    drawPendulum(&painter, p1);
-    drawPendulum(&painter, p2);
+    for(unsigned int i = 0; i < allPendulums.size(); i++) {
+        drawPendulum(&painter, allPendulums[i]);
+    }
 }

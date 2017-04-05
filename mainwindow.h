@@ -6,6 +6,7 @@
 #include <QMainWindow>
 #include <QTimer>
 #include <QPainter>
+#include <vector>
 
 
 namespace Ui {
@@ -29,7 +30,8 @@ class MainWindow : public QMainWindow {
     private:
         Ui::MainWindow *ui;
 
-        Pendulum p1, p2;
+        std::vector<Pendulum> allPendulums;
+
 
         QTimer renderTimer;
         QTimer updateTimer;
