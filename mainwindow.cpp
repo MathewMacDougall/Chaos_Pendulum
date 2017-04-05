@@ -5,23 +5,23 @@
 #include <iostream>
 
 MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow)//, p1(150, -2, 300000, Point()), p2(150, 0.9 * M_PI, 50, p1)
-{
+    QMainWindow(parent), ui(new Ui::MainWindow) {
+
     ui->setupUi(this);
 
-    //p1 = Pendulum(150, -2, 300000, Point());
-    //p2 = Pendulum(150, 0.9 * M_PI, 50, p1);
-    //p1(150, -2, 300000, Point()), p2(150, 0.9 * M_PI, 50, p1)
     allPendulums.push_back(Pendulum(150, -2, 300000, Point()));
+    allPendulums.push_back(Pendulum(150, 0.9 * M_PI, 50, Point()));
+    allPendulums[0].attachChild(allPendulums[1]);
 
-    fps = 30;
+    rootPendulums.push_back(&allPendulums[0]);
+
+    fps = 60;
     fps_timer = 1000 / fps;
     fps_dt = fps_timer / 1000.0;
 
-    ups = 60;
-    ups_timer = 1000 / fps;
-    ups_dt = fps_timer / 1000.0;
+    ups = 100;
+    ups_timer = 1000 / ups;
+    ups_dt = ups_timer / 1000.0 * 4;
 
     connect(&renderTimer, SIGNAL(timeout()), this, SLOT(update()));
     renderTimer.start(fps_timer);
@@ -35,8 +35,8 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::updateSimulation() {
-    for(unsigned int i = 0; i < allPendulums.size(); i++) {
-        allPendulums[i].update(ups_dt);
+    for(unsigned int i = 0; i < rootPendulums.size(); i++) {
+        rootPendulums[i]->update(ups_dt);
     }
 }
 

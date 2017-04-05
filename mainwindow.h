@@ -31,7 +31,7 @@ class MainWindow : public QMainWindow {
         Ui::MainWindow *ui;
 
         std::vector<Pendulum> allPendulums;
-
+        std::vector<Pendulum *> rootPendulums; // all Pendulums connected to a fixed point
 
         QTimer renderTimer;
         QTimer updateTimer;
