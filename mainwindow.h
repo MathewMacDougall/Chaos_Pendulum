@@ -27,7 +27,12 @@ class MainWindow : public QMainWindow {
     public slots:
         void updateSimulation();
 
-    private:
+private slots:
+        void on_actionStart_triggered();
+
+        void on_actionStop_triggered();
+
+private:
         Ui::MainWindow *ui;
 
         std::vector<Pendulum> allPendulums;

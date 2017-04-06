@@ -75,3 +75,13 @@ void MainWindow::paintEvent(QPaintEvent *) {
         drawPendulum(&painter, allPendulums[i]);
     }
 }
+
+void MainWindow::on_actionStart_triggered()
+{
+    updateTimer.start(ups_timer);
+}
+
+void MainWindow::on_actionStop_triggered()
+{
+    updateTimer.stop();
+}
