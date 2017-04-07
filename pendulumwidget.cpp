@@ -1,14 +1,12 @@
-#include "mainwindow.h"
-#include "ui_mainwindow.h"
+#include "pendulumwidget.h"
+//#include "mainwindow.h"
+//#include "ui_mainwindow.h"
 #include <QPainter>
 #include <QTimer>
 #include <iostream>
 
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent), ui(new Ui::MainWindow) {
-
-    ui->setupUi(this);
-
+PendulumWidget::PendulumWidget(QWidget *parent) : QWidget(parent)
+{
     allPendulums.push_back(Pendulum(150, -2, 300000, Point()));
     allPendulums.push_back(Pendulum(150, 0.9 * M_PI, 50, Point()));
     allPendulums[0].attachChild(allPendulums[1]);
@@ -30,17 +28,13 @@ MainWindow::MainWindow(QWidget *parent) :
     updateTimer.start(ups_timer);
 }
 
-MainWindow::~MainWindow() {
-    delete ui;
-}
-
-void MainWindow::updateSimulation() {
+void PendulumWidget::updateSimulation() {
     for(unsigned int i = 0; i < rootPendulums.size(); i++) {
         rootPendulums[i]->update(ups_dt);
     }
 }
 
-void MainWindow::drawPendulum(QPainter *painter, Pendulum p) {
+void PendulumWidget::drawPendulum(QPainter *painter, Pendulum p) {
 
     QPen bobPen(Qt::red);
     bobPen.setWidth(15);
@@ -66,9 +60,9 @@ void MainWindow::drawPendulum(QPainter *painter, Pendulum p) {
     painter->drawPoint(p.getBobPosition().x(), p.getBobPosition().y());
 }
 
-void MainWindow::paintEvent(QPaintEvent *) {
+void PendulumWidget::paintEvent(QPaintEvent *) {
     QPainter painter(this);
-    painter.translate(MainWindow::width() / 2, MainWindow::height() / 2); // set so (0, 0) is the middle of the window
+    painter.translate(PendulumWidget::width() / 2, PendulumWidget::height() / 2); // set so (0, 0) is the middle of the window
     painter.scale(1, -1); // flips the y axis so +ve is "up"
 
     for(unsigned int i = 0; i < allPendulums.size(); i++) {
@@ -76,16 +70,12 @@ void MainWindow::paintEvent(QPaintEvent *) {
     }
 }
 
-void MainWindow::on_actionStart_triggered()
+void PendulumWidget::on_actionStart_triggered()
 {
     updateTimer.start(ups_timer);
 }
 
-void MainWindow::on_actionStop_triggered()
+void PendulumWidget::on_actionStop_triggered()
 {
     updateTimer.stop();
-}
-
-void MainWindow::on_PendulumWidget_destroyed() {
-
 }

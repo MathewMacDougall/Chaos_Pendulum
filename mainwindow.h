@@ -29,8 +29,9 @@ class MainWindow : public QMainWindow {
 
 private slots:
         void on_actionStart_triggered();
-
         void on_actionStop_triggered();
+
+        void on_PendulumWidget_destroyed();
 
 private:
         Ui::MainWindow *ui;

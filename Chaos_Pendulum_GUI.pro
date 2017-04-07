@@ -28,10 +28,12 @@ SOURCES += main_gui.cpp \
            src/pendulum.cpp \
            src/util/physics.cpp \
            src/util/point.cpp \
+    pendulumwidget.cpp
 
 HEADERS  += mainwindow.h \
             src/pendulum.hpp \
             src/util/physics.hpp \
-            src/util/point.hpp
+            src/util/point.hpp \
+    pendulumwidget.h
 
 FORMS    += mainwindow.ui
