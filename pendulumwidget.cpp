@@ -1,6 +1,5 @@
 #include "pendulumwidget.h"
-//#include "mainwindow.h"
-//#include "ui_mainwindow.h"
+
 #include <QPainter>
 #include <QTimer>
 #include <iostream>
