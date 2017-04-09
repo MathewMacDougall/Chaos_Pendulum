@@ -17,7 +17,15 @@ class MainWindow : public QMainWindow {
         explicit MainWindow(QWidget *parent = 0);
         ~MainWindow();
 
-    private:
+    private slots:
+        void on_startButton_clicked();
+        void on_stopButton_clicked();
+        void on_addPendulumButton_clicked();
+        void on_removePendulumButton_clicked();
+        void on_speedSlider_sliderMoved(int position);
+        void on_resetSpeedButton_clicked();
+
+private:
         Ui::MainWindow *ui;
 };
 

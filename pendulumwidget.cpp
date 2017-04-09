@@ -1,24 +1,22 @@
 #include "pendulumwidget.h"
-
 #include <QPainter>
 #include <QTimer>
-#include <iostream>
+#include <cstdlib>
+#include <ctime>
 
 PendulumWidget::PendulumWidget(QWidget *parent) : QWidget(parent)
 {
-    allPendulums.push_back(Pendulum(150, -2, 300000, Point()));
-    allPendulums.push_back(Pendulum(150, 0.9 * M_PI, 50, Point()));
-    allPendulums[0].attachChild(allPendulums[1]);
+    std::srand(time(0));
 
-    rootPendulums.push_back(&allPendulums[0]);
+    allPendulums.push_back(new Pendulum(150, -2, 300000, Point()));
+    allPendulums.push_back(new Pendulum(150, 0.9 * M_PI, 50, Point()));
+    allPendulums[0]->attachChild(*allPendulums[1]);
 
     fps = 60;
     fps_timer = 1000 / fps;
     fps_dt = fps_timer / 1000.0;
 
-    ups = 100;
-    ups_timer = 1000 / ups;
-    ups_dt = ups_timer / 1000.0 * 4;
+    ups_dt = default_ups_dt;
 
     connect(&renderTimer, SIGNAL(timeout()), this, SLOT(update()));
     renderTimer.start(fps_timer);
@@ -28,12 +26,58 @@ PendulumWidget::PendulumWidget(QWidget *parent) : QWidget(parent)
 }
 
 void PendulumWidget::updateSimulation() {
-    for(unsigned int i = 0; i < rootPendulums.size(); i++) {
-        rootPendulums[i]->update(ups_dt);
+    for(unsigned int i = 0; i < allPendulums.size(); i++) {
+        if(!allPendulums[i]->isAttachedToPendulum()) {
+            allPendulums[i]->update(ups_dt);
+            allPendulums[i]->update(0.0); // This should makes sure all pendulums get their base positions updated to look "attached"
+        }
     }
 }
 
-void PendulumWidget::drawPendulum(QPainter *painter, Pendulum p) {
+void PendulumWidget::startSimulation()
+{
+    if(!updateTimer.isActive()) {
+        updateTimer.start(ups_timer);
+    }
+}
+
+void PendulumWidget::stopSimulation()
+{
+    updateTimer.stop();
+}
+
+void PendulumWidget::addPendulum() {
+    if(allPendulums.empty()) {
+        allPendulums.push_back(getRandomPendulum());
+    }else {
+        allPendulums.push_back(getRandomPendulum());
+        allPendulums[allPendulums.size() - 1]->attachTo(*allPendulums[allPendulums.size() - 2]);
+    }
+}
+
+void PendulumWidget::removePendulum() {
+    if(allPendulums.empty()) {
+        return;
+    }else if(allPendulums.size() == 1){
+        allPendulums.pop_back();
+    }else {
+        allPendulums[allPendulums.size() - 1]->attachTo(Point());
+        allPendulums.pop_back();
+    }
+}
+
+void PendulumWidget::setSimulationSpeed(int speedPercentage) {
+    ups_dt = default_ups_dt * speedPercentage / 100.0;
+}
+
+Pendulum* PendulumWidget::getRandomPendulum() {
+    return new Pendulum(std::rand() % 300 + 50,
+                    std::rand() % 1000 / 1000.0 * 2 * M_2_PI - M_PI,
+                    std::rand() % 1000 + 1,
+                    Point());
+}
+
+void PendulumWidget::drawPendulum(QPainter *painter, Pendulum &p) {
 
     QPen bobPen(Qt::red);
     bobPen.setWidth(15);
@@ -65,16 +109,6 @@ void PendulumWidget::paintEvent(QPaintEvent *) {
     painter.scale(1, -1); // flips the y axis so +ve is "up"
 
     for(unsigned int i = 0; i < allPendulums.size(); i++) {
-        drawPendulum(&painter, allPendulums[i]);
+        drawPendulum(&painter, *allPendulums[i]);
     }
-}
-
-void PendulumWidget::on_actionStart_triggered()
-{
-    updateTimer.start(ups_timer);
-}
-
-void PendulumWidget::on_actionStop_triggered()
-{
-    updateTimer.stop();
 }

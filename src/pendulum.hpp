@@ -19,13 +19,6 @@ private:
     double angularAccel;// Positive is counter-clockwise
     double angularVel;// Positive is counter-clockwise
 
-    /**
-     * Detach the child from this pendulum
-     *
-     * @param child - the pendulum to detach
-     */
-    void detachChild(Pendulum &child);
-
 public:
     static constexpr double ANGLE_MODIFIER = 3 * M_PI_2; // Apply to angles to adjust from being relative to "straight down" (3pi/2 rad on the xy-plane)
                                                          // to being relative to the positive x-axis on the xy-plane (o rad)
@@ -81,6 +74,13 @@ public:
      * @param newChild - the pendulum to attach
      */
     void attachChild(Pendulum &newChild);
+
+    /**
+     * Detach the child from this pendulum
+     *
+     * @param child - the pendulum to detach
+     */
+    void detachChild(Pendulum &child);
 
     /**
      * Updates the position of this Pendulum and all children

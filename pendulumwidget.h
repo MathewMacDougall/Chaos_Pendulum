@@ -2,7 +2,6 @@
 #define PENDULUMWIDGET_H
 
 #include "src/pendulum.hpp"
-#include "src/util/point.hpp"
 #include <QWidget>
 #include <QTimer>
 #include <QPainter>
@@ -16,28 +15,36 @@ public:
 
 protected:
     void paintEvent(QPaintEvent *);
-    void drawPendulum(QPainter *painter, Pendulum p);
+    void drawPendulum(QPainter *painter, Pendulum &p);
 
 public slots:
     void updateSimulation();
-
-private slots:
-    void on_actionStart_triggered();
-    void on_actionStop_triggered();
+    void startSimulation();
+    void stopSimulation();
+    void addPendulum();
+    void removePendulum();
+    void setSimulationSpeed(int);
 
 private:
-    std::vector<Pendulum> allPendulums;
-    std::vector<Pendulum *> rootPendulums; // all Pendulums connected to a fixed point
+    std::vector<Pendulum*> allPendulums;
 
     QTimer renderTimer;
     QTimer updateTimer;
+
+    /**
+     * Creates and returns a pendulum with random parameters
+     *
+     * @return a pointer to a pendulum with random parameters
+     */
+    Pendulum* getRandomPendulum();
 
     int fps;
     int fps_timer;
     double fps_dt;
 
-    int ups;
-    int ups_timer;
+    const int ups = 100;
+    const int ups_timer = 1000 / ups;
+    const double default_ups_dt = ups_timer / 1000.0 * 6;
     double ups_dt;
 };
 
