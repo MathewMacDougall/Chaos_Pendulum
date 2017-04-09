@@ -72,7 +72,7 @@ void PendulumWidget::setSimulationSpeed(int speedPercentage) {
 
 Pendulum* PendulumWidget::getRandomPendulum() {
     return new Pendulum(std::rand() % 300 + 50,
-                    std::rand() % 1000 / 1000.0 * 2 * M_2_PI - M_PI,
+                    std::rand() % 1000 / 1000.0 * 2 * M_PI,
                     std::rand() % 1000 + 1,
                     Point());
 }
