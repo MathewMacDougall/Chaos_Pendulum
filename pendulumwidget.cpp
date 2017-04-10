@@ -1,8 +1,10 @@
 #include "pendulumwidget.h"
 #include <QPainter>
+#include <QResizeEvent>
 #include <QTimer>
 #include <cstdlib>
 #include <ctime>
+#include <iostream>
 
 PendulumWidget::PendulumWidget(QWidget *parent) : QWidget(parent)
 {
@@ -11,6 +13,8 @@ PendulumWidget::PendulumWidget(QWidget *parent) : QWidget(parent)
     allPendulums.push_back(new Pendulum(150, -2, 300000, Point()));
     allPendulums.push_back(new Pendulum(150, 0.9 * M_PI, 50, Point()));
     allPendulums[0]->attachChild(*allPendulums[1]);
+
+    updateScaleFactor();
 
     fps = 60;
     fps_timer = 1000 / fps;
@@ -53,6 +57,8 @@ void PendulumWidget::addPendulum() {
         allPendulums.push_back(getRandomPendulum());
         allPendulums[allPendulums.size() - 1]->attachTo(*allPendulums[allPendulums.size() - 2]);
     }
+
+    updateScaleFactor();
 }
 
 void PendulumWidget::removePendulum() {
@@ -64,6 +70,8 @@ void PendulumWidget::removePendulum() {
         allPendulums[allPendulums.size() - 1]->attachTo(Point());
         allPendulums.pop_back();
     }
+
+    updateScaleFactor();
 }
 
 void PendulumWidget::setSimulationSpeed(int speedPercentage) {
@@ -75,6 +83,32 @@ Pendulum* PendulumWidget::getRandomPendulum() {
                     std::rand() % 1000 / 1000.0 * 2 * M_PI,
                     std::rand() % 1000 + 1,
                     Point());
+}
+
+double PendulumWidget::getLongestPendulumChain() {
+    double longest = 0.0;
+    for(unsigned int i = 0; i < allPendulums.size(); i++) {
+        if(!allPendulums[i]->isAttachedToPendulum()) {
+            double length = allPendulums[i]->getMaxTotalLength();
+            if(length > longest) {
+                longest = length;
+            }
+        }
+    }
+
+    return longest;
+}
+
+void PendulumWidget::updateScaleFactor() {
+    int smallesttDim = this->width() > this->height() ? this->height() : this->width();
+    int padding = 50;
+    double length = getLongestPendulumChain() == 0.0 ? 1.0 : getLongestPendulumChain();
+    scaleFactor = (double) (pow(smallesttDim, 0.9) - padding) / length;
+}
+
+void PendulumWidget::resizeEvent(QResizeEvent* event) {
+    QWidget::resizeEvent(event);
+    updateScaleFactor();
 }
 
 void PendulumWidget::drawPendulum(QPainter *painter, Pendulum &p) {
@@ -106,7 +140,7 @@ void PendulumWidget::drawPendulum(QPainter *painter, Pendulum &p) {
 void PendulumWidget::paintEvent(QPaintEvent *) {
     QPainter painter(this);
     painter.translate(PendulumWidget::width() / 2, PendulumWidget::height() / 2); // set so (0, 0) is the middle of the window
-    painter.scale(1, -1); // flips the y axis so +ve is "up"
+    painter.scale(scaleFactor, -scaleFactor); // flips the y axis so +ve is "up"
 
     for(unsigned int i = 0; i < allPendulums.size(); i++) {
         drawPendulum(&painter, *allPendulums[i]);

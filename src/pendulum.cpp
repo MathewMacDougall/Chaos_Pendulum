@@ -148,6 +148,18 @@ double Pendulum::getLength() const {
     return this->length;
 }
 
+double Pendulum::getMaxTotalLength() const {
+    double longest = 0.0;
+    for(unsigned int i = 0; i < childPendulums.size(); i++) {
+        double length = childPendulums[i]->getMaxTotalLength();
+        if(length > longest) {
+            longest = length;
+        }
+    }
+
+    return this->getLength() + longest;
+}
+
 double Pendulum::getAngle() const {
     return this->angle;
 }

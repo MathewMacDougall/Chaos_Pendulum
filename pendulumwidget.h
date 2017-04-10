@@ -16,6 +16,7 @@ public:
 protected:
     void paintEvent(QPaintEvent *);
     void drawPendulum(QPainter *painter, Pendulum &p);
+    void resizeEvent(QResizeEvent* event) override;
 
 public slots:
     void updateSimulation();
@@ -37,6 +38,10 @@ private:
      * @return a pointer to a pendulum with random parameters
      */
     Pendulum* getRandomPendulum();
+    double getLongestPendulumChain();
+    void updateScaleFactor();
+
+    double scaleFactor;
 
     int fps;
     int fps_timer;

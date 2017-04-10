@@ -54,7 +54,6 @@ void MainWindow::on_removePendulumButton_clicked()
 void MainWindow::on_speedSlider_sliderMoved(int position)
 {
     ui->pendulumWidget->setSimulationSpeed(position);
-    std::cout << position << std::endl;
 }
 
 void MainWindow::on_resetSpeedButton_clicked()

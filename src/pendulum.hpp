@@ -153,6 +153,16 @@ public:
     double getLength() const;
 
     /**
+     * Returns the total length of the longest path from this pendulum
+     * to a "leaf" pendulum that is a child of this pendulum.
+     * For example if the pendulums were thought of as a tree, this
+     * would return the height of this node/pendulum
+     *
+     * @return the total length of the longest path from this pendulum to a child "leaf" pendulum
+     */
+    double getMaxTotalLength() const;
+
+    /**
      * Returns a value 0 <= angle < 2pi representing the angle between the pendulum
      * arm and the negative y direction ("down"). (The angle of the arm relative to the
      * negative y-axis as see on a 2D x-y plane)
