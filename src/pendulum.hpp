@@ -18,7 +18,9 @@ private:
     double mass;
     double angularAccel;// Positive is counter-clockwise
     double angularVel;// Positive is counter-clockwise
-    Point centripetalForce;
+    Point centripetalForce; // positive defined as "away" from base of pendulum
+    Point tangentForce;
+    Point netForce;
     double torgue;
     double rotationalInertia;
 

@@ -54,7 +54,7 @@ class Point final {
          * Returns the angle (in radians) of the vector represented by this Point
          * The angle is relative to the positive x-axis on the x-y plane
          *
-         * @return the angle in radians of this Point 0 <= angle < 360
+         * @return the angle in radians of this Point 0 <= angle < 2*PI
          */
         double angle() const;
 

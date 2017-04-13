@@ -1,6 +1,7 @@
 #include <algorithm>
 #include "pendulum.hpp"
 #include "util/physics.hpp"
+#include <iostream>
 
 Pendulum::Pendulum(double length, double angle, double mass, Pendulum &parent) {
     this->length = length;
@@ -84,19 +85,30 @@ void Pendulum::detachChild(Pendulum &child) {
 // TODO: add tests for update()?
 void Pendulum::update(const double delta_t) {
     updateForces(delta_t);
+    //std::cout << "updated forces" << std::endl;
     updatePositions(delta_t); // should go root to tail
 }
 
 void Pendulum::updateForces(const double delta_t) {
+    netForce = Point();
+
+    // adds forces of all child pendulums to net force of this pendulum
+    // forces from child pendulums only act upon the vector of the child pendulum's arm
     for(unsigned int i = 0; i < childPendulums.size(); i++) {
         childPendulums[i]->update(delta_t);
-        centripetalForce.add(childPendulums[i]->centripetalForce);
+        netForce = netForce.add(childPendulums[i]->netForce.projectOnto(
+                childPendulums[i]->getBobPosition().sub(childPendulums[i]->getBasePosition())));
+        //std::cout << netForce.x() << ", " << netForce.y() << std::endl;
     }
 
-    Point forceGrav = Point(0, mass * -Physics::ACCEL_G);
-    Point forceSum = centripetalForce.add(forceGrav);
+    Point forceGrav = Point(0, mass * -Physics::ACCEL_G); // force vector pointing "down"
 
-    Point forceTangent = getTangentForce(forceSum);
+    // add all forces to net force
+    netForce = netForce.add(forceGrav);
+    std::cout << forceGrav.x() << ", " << forceGrav.y() << std::endl;
+    //std::cout << netForce.x() << ", " << netForce.y() << std::endl;
+
+    Point forceTangent = getTangentForce(netForce);
 
     /* perp() always returns pointing "counterclockwise", so if the tangent force is the same direction
      * as it, is the force (and therefore accel) will be in the counterclockwise direction and therefore positive.
@@ -108,15 +120,7 @@ void Pendulum::updateForces(const double delta_t) {
         angularAccel = -forceTangent.len() / mass / length;
 
     angularVel += angularAccel * delta_t;
-//    angle += angularVel * delta_t;
-//
-//    if(isAttachedToPendulum())
-//        base = parentPtr->getBobPosition();
-//
-//    bob = base.add(Point(length * cos(angle + ANGLE_MODIFIER), length * sin(angle + ANGLE_MODIFIER)));
-
-    //double centripetalForceMag = mass * (angularVel * length) * (angularVel * length) / length;
-    //return base.sub(bob).norm() * -centripetalForceMag;
+    //std::cout << angularVel << std::endl;
 }
 
 void Pendulum::updatePositions(const double delta_t) {
