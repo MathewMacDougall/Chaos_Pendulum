@@ -24,7 +24,7 @@ private:
     double torgue;
     double rotationalInertia;
 
-    void updateForces(const double delta_t);
+    Point updateForces(const double delta_t);
     void updatePositions(const double delta_t);
 
 public:
@@ -169,6 +169,8 @@ public:
      * @return the total length of the longest path from this pendulum to a child "leaf" pendulum
      */
     double getMaxTotalLength() const;
+
+    Point getNetForce() const;
 
     /**
      * Returns a value 0 <= angle < 2pi representing the angle between the pendulum

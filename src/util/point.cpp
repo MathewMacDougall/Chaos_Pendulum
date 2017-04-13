@@ -12,6 +12,11 @@ Point::Point(double x, double y) {
     ypos = y;
 }
 
+Point::Point(const Point &other) {
+    this->xpos = other.x();
+    this->ypos = other.y();
+}
+
 double Point::x() const {
     return this->xpos;
 }

@@ -13,6 +13,7 @@ Pendulum::Pendulum(double length, double angle, double mass, Pendulum &parent) {
     bob = base.add(Point(length * cos(angle + ANGLE_MODIFIER), length * sin(angle + ANGLE_MODIFIER)));
     angularAccel = 0.0;
     angularVel = 0.0;
+    rotationalInertia = mass * length * length;
 }
 
 Pendulum::Pendulum(double length, double angle, double mass, Point base) {
@@ -24,6 +25,7 @@ Pendulum::Pendulum(double length, double angle, double mass, Point base) {
     bob = base.add(Point(length * cos(angle + ANGLE_MODIFIER), length * sin(angle + ANGLE_MODIFIER)));
     angularAccel = 0.0;
     angularVel = 0.0;
+    rotationalInertia = mass * length * length;
 }
 
 Pendulum::~Pendulum() {
@@ -84,43 +86,50 @@ void Pendulum::detachChild(Pendulum &child) {
 
 // TODO: add tests for update()?
 void Pendulum::update(const double delta_t) {
-    updateForces(delta_t);
-    //std::cout << "updated forces" << std::endl;
-    updatePositions(delta_t); // should go root to tail
+    updateForces(delta_t); //updates recursively (ish) from tail to rot
+    updatePositions(delta_t); // updates from root to tail
 }
 
-void Pendulum::updateForces(const double delta_t) {
+Point Pendulum::updateForces(const double delta_t) {
     netForce = Point();
 
     // adds forces of all child pendulums to net force of this pendulum
     // forces from child pendulums only act upon the vector of the child pendulum's arm
     for(unsigned int i = 0; i < childPendulums.size(); i++) {
-        childPendulums[i]->update(delta_t);
-        netForce = netForce.add(childPendulums[i]->netForce.projectOnto(
-                childPendulums[i]->getBobPosition().sub(childPendulums[i]->getBasePosition())));
-        //std::cout << netForce.x() << ", " << netForce.y() << std::endl;
+        netForce = netForce.add(childPendulums[i]->updateForces(delta_t)
+                                .projectOnto(childPendulums[i]->getBobPosition().sub(childPendulums[i]->getBasePosition())));
+
+        //std::cout << "in updating child: " << getMass() << ": " << netForce.x() << ", " << netForce.y() << std::endl;
     }
 
-    Point forceGrav = Point(0, mass * -Physics::ACCEL_G); // force vector pointing "down"
+    Point forceGrav = Point(0, mass * -Physics::ACCEL_G); // force vector pointing "down"  
 
     // add all forces to net force
     netForce = netForce.add(forceGrav);
-    std::cout << forceGrav.x() << ", " << forceGrav.y() << std::endl;
-    //std::cout << netForce.x() << ", " << netForce.y() << std::endl;
+    std::cout << getMass() << ": " << netForce.x() << ", " << netForce.y() << std::endl;
 
-    Point forceTangent = getTangentForce(netForce);
+    // calculate torgue and use to get angular accel
+    Point torgueForce = getTangentForce(forceGrav.add(netForce));
+
+    if(torgueForce.isSameDirectionAs(bob.sub(base).perp(), M_PI / 16.0))
+        torgue = fabs(torgueForce.len()) * length;
+    else
+        torgue = -fabs(torgueForce.len()) * length;
+
+    angularAccel = torgue / rotationalInertia;
 
     /* perp() always returns pointing "counterclockwise", so if the tangent force is the same direction
      * as it, is the force (and therefore accel) will be in the counterclockwise direction and therefore positive.
      * Vice-versa for negative
      */
-    if(forceTangent.isSameDirectionAs(bob.sub(base).perp(), M_PI / 16.0))
-        angularAccel = forceTangent.len() / mass / length;
-    else
-        angularAccel = -forceTangent.len() / mass / length;
+//    if(tangentForce.isSameDirectionAs(bob.sub(base).perp(), M_PI / 16.0))
+//        angularAccel = tangentForce.len() / mass / length;
+//    else
+//        angularAccel = -tangentForce.len() / mass / length;
 
     angularVel += angularAccel * delta_t;
-    //std::cout << angularVel << std::endl;
+
+    return netForce;
 }
 
 void Pendulum::updatePositions(const double delta_t) {
@@ -179,6 +188,10 @@ double Pendulum::getMaxTotalLength() const {
     }
 
     return this->getLength() + longest;
+}
+
+Point Pendulum::getNetForce() const {
+    return this->netForce;
 }
 
 double Pendulum::getAngle() const {

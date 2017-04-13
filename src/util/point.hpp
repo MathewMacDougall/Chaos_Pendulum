@@ -23,6 +23,8 @@ class Point final {
          */
         Point(double, double);
 
+        Point(const Point &other);
+
         /**
          * Returns the x coordinate of the Point
          *

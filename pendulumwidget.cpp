@@ -10,7 +10,7 @@ PendulumWidget::PendulumWidget(QWidget *parent) : QWidget(parent)
 {
     std::srand(time(0));
 
-    allPendulums.push_back(new Pendulum(150, -2, 300000, Point()));
+    allPendulums.push_back(new Pendulum(150, -2, 30, Point()));
     allPendulums.push_back(new Pendulum(150, 0.9 * M_PI, 50, Point()));
     allPendulums[0]->attachChild(*allPendulums[1]);
 
