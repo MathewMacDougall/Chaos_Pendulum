@@ -82,11 +82,15 @@ void Pendulum::detachChild(Pendulum &child) {
 }
 
 // TODO: add tests for update()?
-const Point Pendulum::update(const double delta_t) {
-    Point centripetalForce;
+void Pendulum::update(const double delta_t) {
+    updateForces(delta_t);
+    updatePositions(delta_t); // should go root to tail
+}
 
+void Pendulum::updateForces(const double delta_t) {
     for(unsigned int i = 0; i < childPendulums.size(); i++) {
-        centripetalForce.add(childPendulums[i]->update(delta_t));
+        childPendulums[i]->update(delta_t);
+        centripetalForce.add(childPendulums[i]->centripetalForce);
     }
 
     Point forceGrav = Point(0, mass * -Physics::ACCEL_G);
@@ -104,6 +108,18 @@ const Point Pendulum::update(const double delta_t) {
         angularAccel = -forceTangent.len() / mass / length;
 
     angularVel += angularAccel * delta_t;
+//    angle += angularVel * delta_t;
+//
+//    if(isAttachedToPendulum())
+//        base = parentPtr->getBobPosition();
+//
+//    bob = base.add(Point(length * cos(angle + ANGLE_MODIFIER), length * sin(angle + ANGLE_MODIFIER)));
+
+    //double centripetalForceMag = mass * (angularVel * length) * (angularVel * length) / length;
+    //return base.sub(bob).norm() * -centripetalForceMag;
+}
+
+void Pendulum::updatePositions(const double delta_t) {
     angle += angularVel * delta_t;
 
     if(isAttachedToPendulum())
@@ -111,8 +127,9 @@ const Point Pendulum::update(const double delta_t) {
 
     bob = base.add(Point(length * cos(angle + ANGLE_MODIFIER), length * sin(angle + ANGLE_MODIFIER)));
 
-    double centripetalForceMag = mass * (angularVel * length) * (angularVel * length) / length;
-    return base.sub(bob).norm() * -centripetalForceMag;
+    for(unsigned int i = 0; i < childPendulums.size(); i++) {
+        childPendulums[i]->updatePositions(delta_t);
+    }
 }
 
 // TODO: add tests

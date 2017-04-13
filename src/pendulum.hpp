@@ -18,6 +18,12 @@ private:
     double mass;
     double angularAccel;// Positive is counter-clockwise
     double angularVel;// Positive is counter-clockwise
+    Point centripetalForce;
+    double torgue;
+    double rotationalInertia;
+
+    void updateForces(const double delta_t);
+    void updatePositions(const double delta_t);
 
 public:
     static constexpr double ANGLE_MODIFIER = 3 * M_PI_2; // Apply to angles to adjust from being relative to "straight down" (3pi/2 rad on the xy-plane)
@@ -89,7 +95,7 @@ public:
      *
      * @param delta_t - the change in time to update
      */
-    const Point update(const double delta_t);
+    void update(const double delta_t);
 
     /**
      * Returns the force component tangent to the arm of this Pendulum
